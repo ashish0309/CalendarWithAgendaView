@@ -1,6 +1,6 @@
 # CalendarWithAgendaApp
 
-A screen similar to Calendar screen in Outlook iOS app
+A screen similar to Calendar screen in Outlook iOS app.
 
 ## Demo
 [![](http://share.gifyoutube.com/G5x7MK.gif)](https://youtu.be/eT5ITySyBaU)
@@ -11,6 +11,8 @@ Similar screen can be easily implemented in any app by just dragging the whole c
 Demo app has static data provided.
 
 For dynamic data, init ASAgendaDataSource class with dictionary with the required data, and then pass created ASAgendaDataSource instance to ASAgendaView class instance.
+
+Test cases are added for important scenarios.
 
 
 
