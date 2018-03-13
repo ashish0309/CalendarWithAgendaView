@@ -3,7 +3,7 @@
 A screen similar to Calendar screen in Outlook iOS app.
 
 ## Demo
-[![](http://share.gifyoutube.com/G5x7MK.gif)](https://youtu.be/eT5ITySyBaU)
+![](https://i.imgur.com/ZK1G2pf.gif)
 
 ## Usage
 
