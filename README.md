@@ -1,6 +1,6 @@
-# CalendarWithAgendaApp
+# CalendarWithAgendaScreen
 
-A screen similar to Calendar screen in Outlook iOS app.
+A screen with Calendar view at the top and Agenda view at bottom.
 
 ## Demo
 ![](https://i.imgur.com/ZK1G2pf.gif)
