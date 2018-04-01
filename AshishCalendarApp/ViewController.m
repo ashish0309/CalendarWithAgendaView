@@ -37,29 +37,31 @@
     self.navigationController.navigationBar.shadowImage = [UIImage new];
     self.navigationController.navigationBar.barTintColor = [UIColor as_lightGrayColor];
     
-    //init calendar agendas with dummy data
-    NSArray *calendaragendas = [[self class] calendarAgendas];
-    NSMutableArray <ASCalendarAgenda *>* cAgendas = [NSMutableArray new];
-    for (NSDictionary *dict in calendaragendas) {
-        [cAgendas addObject:[[ASCalendarAgenda alloc] initWithDictionary:dict]];
+    // Init calendar agendas with array consisting of dummy agenda dictionary.
+    NSArray *calendarAgendasWithDict = [[self class] calendarAgendas];
+    NSMutableArray <ASCalendarAgenda *>* calendarAgendasWithModel = [NSMutableArray new];
+    for (NSDictionary *dict in calendarAgendasWithDict) {
+        [calendarAgendasWithModel addObject:[[ASCalendarAgenda alloc] initWithDictionary:dict]];
     }
-    NSMutableDictionary *agendasD = [NSMutableDictionary new];
-    for (ASCalendarAgenda *agenda in cAgendas) {
+    // Group agendas based on agenda's start date's monthy, year, day string concatenation.
+    NSMutableDictionary *groupedCalendarAgendas = [NSMutableDictionary new];
+    for (ASCalendarAgenda *agenda in calendarAgendasWithModel) {
         NSString *key = agenda.dateString;
-        NSMutableArray *agendas = [(agendasD[key] ? : @[]) mutableCopy];
+        NSMutableArray *agendas = [(groupedCalendarAgendas[key] ? : @[]) mutableCopy];
         [agendas addObject:agenda];
-        agendasD[agenda.dateString] = [agendas copy];
+        groupedCalendarAgendas[agenda.dateString] = [agendas copy];
     }
     
-    NSDictionary *agendasDictCopy = [agendasD copy];
-    ASAgendaDataSource *dataSource = [[ASAgendaDataSource alloc] initWithDictionary:agendasDictCopy startDate:[NSDate defaultStartDate] endDate:[NSDate defaultEndDate]];
+    NSDictionary *groupedCalendarAgendasCopy = [groupedCalendarAgendas copy];
+    // Init agenda Datasource.
+    ASAgendaDataSource *agendasDataSource = [[ASAgendaDataSource alloc] initWithDictionary:groupedCalendarAgendasCopy startDate:[NSDate defaultStartDate] endDate:[NSDate defaultEndDate]];
     _agendaView = [ASAgendaView new];
     _agendaView.delegate = self;
-    _agendaView.dataSource = dataSource;
+    _agendaView.dataSource = agendasDataSource;
     [self.view addSubview:_agendaView];
-    _agendaDataSource = dataSource;
+    self.agendaDataSource = agendasDataSource;
 
-    //setup constraints
+    // Setup constraints
     _calendarView.translatesAutoresizingMaskIntoConstraints = NO;
     [_calendarView.topAnchor constraintEqualToAnchor:self.view.topAnchor].active = YES;
     [_calendarView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor].active = YES;
@@ -74,6 +76,8 @@
     [_agendaView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor].active = YES;
     [_agendaView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor].active = YES;
     [_agendaView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor].active = YES;
+    
+    self.titleView.text = [[NSDate date] monthYearString];
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -114,7 +118,7 @@
 
 - (void)calendarView:(ASCalendarView *)calendarView scrolledToSectionOfDifferentNumberOfRows:(NSInteger)rows {
     _calendarViewHeightConstraint.constant = floorf(self.view.bounds.size.width / 7.0f) * rows + WEEKDAY_VIEW_HEIGHT;
-    [UIView animateWithDuration:0.3 animations:^{
+    [UIView animateWithDuration:0.3 animations:^ {
         [self.view layoutIfNeeded];
     }];
 }
@@ -125,7 +129,7 @@
     self.titleView.text = [date monthYearString];
 }
 
-//Create dummy calendar agendas to show in Agenda View
+// Create dummy calendar agendas to show in Agenda View
 + (NSArray *)calendarAgendas {
     NSMutableArray *agendasArray = [NSMutableArray new];
     for (NSInteger i = 0; i < 120; i++) {
